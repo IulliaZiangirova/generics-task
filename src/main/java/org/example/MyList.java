@@ -1,31 +1,34 @@
 package org.example;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 
-public class MyList <T extends Number>{
+public class MyList <T extends Number> implements Iterable<T>{
 
-  private int defaultSize = 10;
-  private int countOfElements = 0;
-  private T [] array = new T [defaultSize];
+
+  private int size = 0;
+  private T [] array;
+
+  public MyList(){
+    this.array = (T[]) new Number[10];
+  }
 
 
 
   public void add(T t) {
-    if (countOfElements >= array.length / 2){
+    if (size == array.length ){
       resize();
     }
-    array[countOfElements] = t;
-    countOfElements++;
+    array[size] = t;
+    size++;
 
   }
 
   public T get(int index) {
-    if (index < array.length && index >= 0){
+    if(index >= size || index < 0){
+      throw new IndexOutOfBoundsException();
+    }
       return array[index];
-    }else throw new ArrayIndexOutOfBoundsException();
-
   }
 
   private void resize() {
@@ -33,26 +36,96 @@ public class MyList <T extends Number>{
     array = Arrays.copyOf(array, newSize);
   }
 
+
   public T remove(int index) {
-    if (index < array.length && index >= 0){
+    if(index > size || index < 0){
+      throw new IndexOutOfBoundsException();
+    }
       T elementForRemoving = array[index];
-      for (int i = index; i < countOfElements; i++) {
+      for (int i = index; i < size; i++) {
         array[i] = array[i + 1];
       }
-      countOfElements--;
+      size--;
       return elementForRemoving;
-    }else throw new ArrayIndexOutOfBoundsException();
   }
 
   public <R extends Number> MyList<R> map(Function <T, R> f) {
     MyList<R> myList = new MyList<>();
-    for (int i = 0; i < countOfElements; i++) {
+    for (int i = 0; i < size; i++) {
       myList.add(f.apply(this.get(i)));
     }
     return myList;
   }
 
   public int size() {
-    return countOfElements;
+    return size;
   }
+
+
+  @Override
+  public int hashCode() {
+    int hash = size();
+    for (int i = 0; i < size; i++) {
+      hash = hash + 31 * (int)array[i];
+    }
+    return hash;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null || getClass() != obj.getClass())
+      return false;
+
+    MyList<T> otherList = (MyList<T>) obj;
+    if (otherList.size() != size())
+      return false;
+
+    boolean result = true;
+    for (int i = 0; i < size(); i++) {
+      if(get(i) != otherList.get(i)){
+        result = false;
+        break;
+      }
+    }
+    return result;
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder("[");
+    for (int i = 0; i < size; i++) {
+      sb.append(array[i]);
+      if (i < size - 1) {
+        sb.append(", ");
+      }}
+      sb.append("]");
+      return sb.toString();
+  }
+
+  @Override
+  public Iterator<T> iterator() {
+    return new MyListIterator();
+  }
+
+  private class MyListIterator implements Iterator<T>{
+    private int index = 0;
+
+      @Override
+      public boolean hasNext() {
+          return index < size;
+      }
+
+      @Override
+      public T next() {
+        if (!hasNext()){
+          throw new NoSuchElementException();
+        }
+          return array[index++];
+      }
+  }
+
+
+
 }
