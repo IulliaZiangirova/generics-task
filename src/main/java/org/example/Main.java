@@ -4,17 +4,21 @@ import java.sql.SQLOutput;
 
 public class Main {
     public static void main(String[] args) {
-        MyList<Integer> list2 = new MyList<>();
-        list2.add(34);
-        list2.add(0);
-        list2.add(0);
-        list2.add(-56);
-        list2.add(-1);
-        list2.add(555555);
-        list2.add(76);
-        list2.add(34);
-        list2.add(3);
-        System.out.println(list2.get(10));
+
+        MyList<Double> equalList1 = new MyList<>();
+        equalList1.add(1.8);
+        equalList1.add(2.0);
+        equalList1.add(3.7);
+
+
+        MyList<Double> list1 = new MyList<>();
+        equalList1.add(1.8);
+        equalList1.add(2.0);
+        equalList1.add(3.7);
+
 
     }
+
+    public static void m(){}
+
 }

@@ -38,13 +38,14 @@ public class MyList <T extends Number> implements Iterable<T>{
 
 
   public T remove(int index) {
-    if(index > size || index < 0){
+    if(index >= size || index < 0){
       throw new IndexOutOfBoundsException();
     }
       T elementForRemoving = array[index];
-      for (int i = index; i < size; i++) {
+      for (int i = index; i < size - 1; i++) {
         array[i] = array[i + 1];
       }
+      array[size - 1] = null;
       size--;
       return elementForRemoving;
   }
@@ -66,7 +67,7 @@ public class MyList <T extends Number> implements Iterable<T>{
   public int hashCode() {
     int hash = size();
     for (int i = 0; i < size; i++) {
-      hash = hash + 31 * (int)array[i];
+      hash = hash * 31 + array[i].hashCode();
     }
     return hash;
   }
@@ -84,7 +85,7 @@ public class MyList <T extends Number> implements Iterable<T>{
 
     boolean result = true;
     for (int i = 0; i < size(); i++) {
-      if(get(i) != otherList.get(i)){
+      if(!get(i).equals(otherList.get(i))){
         result = false;
         break;
       }
