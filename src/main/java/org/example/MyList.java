@@ -7,13 +7,14 @@ public class MyList <T extends Number> implements Iterable<T>{
 
 
   private int size = 0;
-  private T [] array;
+  private Object [] array;
+  private final static int DEFAULT_CAPACITY = 10;
+  private final static double VALUE_FOR_RESIZE = 1.5;
+
 
   public MyList(){
-    this.array = (T[]) new Number[10];
+    this.array = (T[]) new Number[DEFAULT_CAPACITY];
   }
-
-
 
   public void add(T t) {
     if (size == array.length ){
@@ -21,19 +22,20 @@ public class MyList <T extends Number> implements Iterable<T>{
     }
     array[size] = t;
     size++;
-
   }
 
   public T get(int index) {
     if(index >= size || index < 0){
       throw new IndexOutOfBoundsException();
     }
-      return array[index];
+      return (T)array[index];
   }
 
   private void resize() {
-    int newSize = (int) (array.length * 1.5);
-    array = Arrays.copyOf(array, newSize);
+    int newSize = (int) (array.length * VALUE_FOR_RESIZE);
+    Object [] newArray =  (T[]) new Number[newSize];
+    System.arraycopy(array, 0, newArray, 0, size);
+    array = newArray;
   }
 
 
@@ -41,7 +43,7 @@ public class MyList <T extends Number> implements Iterable<T>{
     if(index >= size || index < 0){
       throw new IndexOutOfBoundsException();
     }
-      T elementForRemoving = array[index];
+      T elementForRemoving = (T)array[index];
       for (int i = index; i < size - 1; i++) {
         array[i] = array[i + 1];
       }
@@ -50,10 +52,10 @@ public class MyList <T extends Number> implements Iterable<T>{
       return elementForRemoving;
   }
 
-  public <R extends Number> MyList<R> map(Function <T, R> f) {
+  public <R extends Number> MyList<R> map(Function <T, R> function) {
     MyList<R> myList = new MyList<>();
     for (int i = 0; i < size; i++) {
-      myList.add(f.apply(this.get(i)));
+      myList.add(function.apply(this.get(i)));
     }
     return myList;
   }
@@ -123,7 +125,7 @@ public class MyList <T extends Number> implements Iterable<T>{
         if (!hasNext()){
           throw new NoSuchElementException();
         }
-          return array[index++];
+          return (T)array[index++];
       }
   }
 

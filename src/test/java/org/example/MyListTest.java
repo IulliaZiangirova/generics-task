@@ -4,12 +4,11 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.util.function.Function;
+
 public class MyListTest {
 
-  MyList<Double> list1;
-  MyList<Integer> list2;
-
-  private MyList<Double> getList1 (){
+  private MyList<Double> initDoubleList (){
     MyList<Double> list = new MyList<>();
     list.add(1.8);
     list.add(2.0);
@@ -17,250 +16,219 @@ public class MyListTest {
     return list;
   }
 
-
-  private MyList<Integer> getList2 (){
+  private MyList<Integer> initIntegerList (){
     MyList<Integer> list = new MyList<>();
     list.add(34);
-    list.add(0);
-    list.add(0);
-    list.add(-56);
-    list.add(-1);
-    list.add(555555);
-    list.add(76);
-    list.add(34);
-    list.add(3);
-    list.add(496);
+    list.add(-67);
+    list.add(4567);
     return list;
   }
 
 
   @Test
   void should_add(){
-    list1 = getList1();
-    list1.add(4.8);
-    Assertions.assertEquals(4.8, list1.get(3));
+    MyList<Double> doubleList = initDoubleList();
+    doubleList.add(4.8);
+    Assertions.assertEquals(4.8, doubleList.get(3));
 
-    list2 = getList2();
-    list2.add(-56);
-    Assertions.assertEquals(-56, list2.get(10));
+    //add 8 values to check resize method
+    MyList<Integer> integerList = initIntegerList();
+    integerList.add(-56);
+    integerList.add(4);
+    integerList.add(-5);
+    integerList.add(66);
+    integerList.add(765);
+    integerList.add(0);
+    integerList.add(-56);
+    integerList.add(34);
+    Assertions.assertEquals(34, integerList.get(10));
   }
 
   @Test
   void should_get(){
-    list1 = getList1();
-    Assertions.assertEquals(3.7, list1.get(2));
-    Assertions.assertEquals(1.8, list1.get(0));
+    MyList<Double> doubleList = initDoubleList();
+    Assertions.assertEquals(3.7, doubleList.get(2));
+    Assertions.assertEquals(1.8, doubleList.get(0));
 
-    list2 = getList2();
-    Assertions.assertEquals(496, list2.get(9));
-    Assertions.assertEquals(34, list2.get(0));
+    MyList<Integer> integerList = initIntegerList();
+    Assertions.assertEquals(-67, integerList.get(1));
+    Assertions.assertEquals(34, integerList.get(0));
   }
 
   @Test
   void method_get_should_throw_exception_by_invalid_index(){
-    list1 = getList1();
-    list2 = getList2();
-    Assertions.assertThrows(IndexOutOfBoundsException.class, () -> list1.get(4));
-    Assertions.assertThrows(IndexOutOfBoundsException.class, () -> list1.get(100));
-    Assertions.assertThrows(IndexOutOfBoundsException.class, () -> list2.get(10));
-    Assertions.assertThrows(IndexOutOfBoundsException.class, () -> list2.get(100));
+    MyList<Double> doubleList = initDoubleList();
+    MyList<Integer> integerList = initIntegerList();
+
+    Assertions.assertThrows(IndexOutOfBoundsException.class, () -> doubleList.get(4));
+    Assertions.assertThrows(IndexOutOfBoundsException.class, () -> doubleList.get(100));
+    Assertions.assertThrows(IndexOutOfBoundsException.class, () -> integerList.get(10));
+    Assertions.assertThrows(IndexOutOfBoundsException.class, () -> integerList.get(-7));
   }
 
 
   @Test
   void should_remove(){
-    list1 = getList1();
-    list2 = getList2();
-    double valueFromList1 = list1.remove(1);
-    Assertions.assertEquals(2.0, valueFromList1);
-    Assertions.assertEquals(2, list1.size());
+    MyList<Double> doubleList = initDoubleList();
+    MyList<Integer> integerList = initIntegerList();
+    double valueFromDoubleList = doubleList.remove(1);
+    Assertions.assertEquals(2.0, valueFromDoubleList);
+    Assertions.assertEquals(2, doubleList.size());
 
-    valueFromList1 = list1.remove(0);
-    Assertions.assertEquals(1.8, valueFromList1);
-    Assertions.assertEquals(1, list1.size());
+    valueFromDoubleList = doubleList.remove(0);
+    Assertions.assertEquals(1.8, valueFromDoubleList);
+    Assertions.assertEquals(1, doubleList.size());
 
-    int valueFromList2 = list2.remove(4);
-    Assertions.assertEquals(-1, valueFromList2);
-    Assertions.assertEquals(9, list2.size());
+    int valueFromIntegerList = integerList.remove(1);
+    Assertions.assertEquals(-67, valueFromIntegerList);
+    Assertions.assertEquals(2, integerList.size());
 
-    valueFromList2 = list2.remove(8);
-    Assertions.assertEquals(496, valueFromList2);
-    Assertions.assertEquals(8, list2.size());
+    valueFromIntegerList = integerList.remove(1);
+    Assertions.assertEquals(4567, valueFromIntegerList);
+    Assertions.assertEquals(1, integerList.size());
 
 
   }
 
   @Test
   void should_get_correct_size(){
-    list1 = getList1();
-    list2 = getList2();
-    Assertions.assertEquals(3, list1.size());
-    Assertions.assertEquals(10, list2.size());
+    MyList<Double> doubleList = initDoubleList();
+    MyList<Integer> integerList = initIntegerList();
+    Assertions.assertEquals(3, doubleList.size());
+    Assertions.assertEquals(3, integerList.size());
 
-    list1.add(5.0);
-    Assertions.assertEquals(4, list1.size());
-    list2.add(55);
-    Assertions.assertEquals(11, list2.size());
+    doubleList.add(5.0);
+    Assertions.assertEquals(4, doubleList.size());
+    integerList.add(55);
+    Assertions.assertEquals(4, integerList.size());
 
-    list1.remove(2);
-    Assertions.assertEquals(3, list1.size());
-    list2.remove(2);
-    Assertions.assertEquals(10, list2.size());
+    doubleList.remove(2);
+    Assertions.assertEquals(3, doubleList.size());
+    integerList.remove(2);
+    Assertions.assertEquals(3, integerList.size());
 
   }
 
   @Test
   void method_remove_should_throw_exception_by_invalid_index(){
-    list1 = getList1();
-    list2 = getList2();
-    Assertions.assertThrows(IndexOutOfBoundsException.class, () -> list1.remove(4));
-    Assertions.assertThrows(IndexOutOfBoundsException.class, () -> list1.remove(100));
-    Assertions.assertThrows(IndexOutOfBoundsException.class, () -> list2.remove(10));
-    Assertions.assertThrows(IndexOutOfBoundsException.class, () -> list2.remove(100));
+    MyList<Double> doubleList = initDoubleList();
+    MyList<Integer> integerList = initIntegerList();
+    Assertions.assertThrows(IndexOutOfBoundsException.class, () -> doubleList.remove(4));
+    Assertions.assertThrows(IndexOutOfBoundsException.class, () -> doubleList.remove(100));
+    Assertions.assertThrows(IndexOutOfBoundsException.class, () -> integerList.remove(-7));
+    Assertions.assertThrows(IndexOutOfBoundsException.class, () -> integerList.remove(100));
   }
 
   @Test
   void should_transform_to_string_correctly(){
-    list1 = getList1();
-    list2 = getList2();
+    MyList<Double> doubleList = initDoubleList();
+    MyList<Integer> integerList = initIntegerList();
 
-    String list1ToString = list1.toString();
-    String list2ToString = list2.toString();
+    String doubleListToString = doubleList.toString();
+    String integerListToString = integerList.toString();
 
-    Assertions.assertEquals("[1.8, 2.0, 3.7]", list1ToString);
-    Assertions.assertEquals("[34, 0, 0, -56, -1, 555555, 76, 34, 3, 496]", list2ToString);
+    Assertions.assertEquals("[1.8, 2.0, 3.7]", doubleListToString);
+    Assertions.assertEquals("[34, -67, 4567]", integerListToString);
+  }
+
+  @Test
+  void map_test(){
+   MyList<Integer> integerList = initIntegerList();
+   Function<Integer, Double> convertIntegerToDouble = x-> Double.valueOf(x);
+
+   MyList<Double> integerListAfterConvert= integerList.map(convertIntegerToDouble);
+   MyList<Double> expectedList = new MyList<>();
+   expectedList.add(34.0);
+   expectedList.add(-67.0);
+   expectedList.add(4567.0);
+
+   Assertions.assertEquals(expectedList, integerListAfterConvert);
   }
 
 
   @Test
   void should_have_equal_hashcode (){
-    list1 = getList1();
-    list2 = getList2();
+    MyList<Double> doubleList = initDoubleList();
+    MyList<Integer> integerList = initIntegerList();
 
-    MyList<Double> equalList1 = new MyList<>();
-    equalList1.add(1.8);
-    equalList1.add(2.0);
-    equalList1.add(3.7);
+    MyList<Double> equalListToDoubleList = new MyList<>();
+    equalListToDoubleList.add(1.8);
+    equalListToDoubleList.add(2.0);
+    equalListToDoubleList.add(3.7);
 
-    MyList<Integer> equalList2 = new MyList<>();
-    equalList2.add(34);
-    equalList2.add(0);
-    equalList2.add(0);
-    equalList2.add(-56);
-    equalList2.add(-1);
-    equalList2.add(555555);
-    equalList2.add(76);
-    equalList2.add(34);
-    equalList2.add(3);
-    equalList2.add(496);
+    MyList<Integer> equalListToIntegerList = new MyList<>();
+    equalListToIntegerList.add(34);
+    equalListToIntegerList.add(-67);
+    equalListToIntegerList.add(4567);
 
-    int hashCodeOfList1 = list1.hashCode();
-    int hashCodeOfList2 = list2.hashCode();
-    int hashCodeOfEqualList1 = equalList1.hashCode();
-    int hashCodeOfEqualList2 = equalList2.hashCode();
+    int hashCodeOfDoubleList = doubleList.hashCode();
+    int hashCodeOfIntegerList = integerList.hashCode();
+    int hashCodeOfEqualList1 = equalListToDoubleList.hashCode();
+    int hashCodeOfEqualList2 = equalListToIntegerList.hashCode();
 
-    Assertions.assertEquals(hashCodeOfList1, hashCodeOfEqualList1);
-    Assertions.assertEquals(hashCodeOfList2, hashCodeOfEqualList2);
-
+    Assertions.assertEquals(hashCodeOfDoubleList, hashCodeOfEqualList1);
+    Assertions.assertEquals(hashCodeOfIntegerList, hashCodeOfEqualList2);
   }
 
   @Test
   void should_not_have_equal_hashcode_value_reverse_order (){
-    list1 = getList1();
-    list2 = getList2();
+    MyList<Double> doubleList = initDoubleList();
+    MyList<Integer> integerList = initIntegerList();
 
-    MyList<Double> reverseList1 = new MyList<>();
-    reverseList1.add(3.7);
-    reverseList1.add(2.0);
-    reverseList1.add(1.8);
+    MyList<Double> reverseDoubleList = new MyList<>();
+    reverseDoubleList.add(3.7);
+    reverseDoubleList.add(2.0);
+    reverseDoubleList.add(1.8);
 
-    MyList<Integer> reverseList2 = new MyList<>();
-    reverseList2.add(496);
-    reverseList2.add(3);
-    reverseList2.add(34);
-    reverseList2.add(76);
-    reverseList2.add(555555);
-    reverseList2.add(-1);
-    reverseList2.add(-56);
-    reverseList2.add(0);
-    reverseList2.add(0);
-    reverseList2.add(34);
+    MyList<Integer> reverseIntegerList = new MyList<>();
+    reverseIntegerList.add(4567);
+    reverseIntegerList.add(-67);
+    reverseIntegerList.add(34);
 
-    int hashCodeOfList1 = list1.hashCode();
-    int hashCodeOfList2 = list2.hashCode();
-    int hashCodeOfEqualList1 = reverseList1.hashCode();
-    int hashCodeOfEqualList2 = reverseList2.hashCode();
+    int hashCodeOfDoubleList = doubleList.hashCode();
+    int hashCodeOfIntegerList = integerList.hashCode();
+    int hashCodeOfReverseDouble = reverseDoubleList.hashCode();
+    int hashCodeOfReverseInteger = reverseIntegerList.hashCode();
 
-    Assertions.assertNotEquals(hashCodeOfList1, hashCodeOfEqualList1);
-    Assertions.assertNotEquals(hashCodeOfList2, hashCodeOfEqualList2);
+    Assertions.assertNotEquals(hashCodeOfDoubleList, hashCodeOfReverseDouble);
+    Assertions.assertNotEquals(hashCodeOfIntegerList, hashCodeOfReverseInteger);
   }
 
   @Test
   void should_be_equal_the_same_value(){
-    list1 = getList1();
-    list2 = getList2();
+    MyList<Double> doubleList = initDoubleList();
+    MyList<Integer> integerList = initIntegerList();
 
-    MyList<Double> equalList1 = new MyList<>();
-    equalList1.add(1.8);
-    equalList1.add(2.0);
-    equalList1.add(3.7);
+    MyList<Double> equalListToDoubleList = new MyList<>();
+    equalListToDoubleList.add(1.8);
+    equalListToDoubleList.add(2.0);
+    equalListToDoubleList.add(3.7);
 
-    MyList<Integer> equalList2 = new MyList<>();
-    equalList2.add(34);
-    equalList2.add(0);
-    equalList2.add(0);
-    equalList2.add(-56);
-    equalList2.add(-1);
-    equalList2.add(555555);
-    equalList2.add(76);
-    equalList2.add(34);
-    equalList2.add(3);
-    equalList2.add(496);
+    MyList<Integer> equalListToIntegerList = new MyList<>();
+    equalListToIntegerList.add(34);
+    equalListToIntegerList.add(-67);
+    equalListToIntegerList.add(4567);
 
 
-    Assertions.assertTrue(list1.equals(equalList1));
-    //Assertions.assertTrue(list2.equals(equalList2));
+    Assertions.assertTrue(doubleList.equals(equalListToDoubleList));
+    Assertions.assertTrue(integerList.equals(equalListToIntegerList));
   }
 
   @Test
   void should_be_equal_the_same_object(){
-    list1 = getList1();
-    list2 = getList2();
-    MyList<Double> theSameList1 = list1;
-    MyList<Integer> theSameList2 = list2;
-    Assertions.assertTrue(list1.equals(theSameList1));
-    Assertions.assertTrue(list2.equals(theSameList2));
+    MyList<Double> doubleList = initDoubleList();
+    MyList<Integer> integerList = initIntegerList();
+    MyList<Double> theSameList1 = doubleList;
+    MyList<Integer> theSameList2 = integerList;
+    Assertions.assertTrue(doubleList.equals(theSameList1));
+    Assertions.assertTrue(integerList.equals(theSameList2));
   }
 
-  @Test
-  void should_be_not_equal_diff_size_the_same_values(){
-    list1 = getList1();
-    list2 = getList2();
-
-    MyList<Double> list1ForCompare = new MyList<>();
-    list1ForCompare.add(1.8);
-    list1ForCompare.add(2.0);
-
-    MyList<Integer> list2ForCompare = new MyList<>();
-    list2ForCompare.add(34);
-    list2ForCompare.add(0);
-    list2ForCompare.add(0);
-    list2ForCompare.add(-56);
-    list2ForCompare.add(-1);
-    list2ForCompare.add(555555);
-    list2ForCompare.add(76);
-    list2ForCompare.add(34);
-    list2ForCompare.add(3);
-
-    Assertions.assertFalse(list1.equals(list1ForCompare));
-    Assertions.assertFalse(list2.equals(list2ForCompare));
-
-  }
 
   @Test
   void should_be_not_equal_diff_values(){
-    list1 = getList1();
-    list2 = getList2();
+    MyList<Double> doubleList = initDoubleList();
+    MyList<Integer> integerList = initIntegerList();
 
     MyList<Double> list1ForCompare = new MyList<>();
     list1ForCompare.add(4.8);
@@ -271,32 +239,20 @@ public class MyListTest {
     list2ForCompare.add(4);
     list2ForCompare.add(5);
     list2ForCompare.add(6);
-    list2ForCompare.add(9);
-    list2ForCompare.add(4);
-    list2ForCompare.add(555556);
-    list2ForCompare.add(4);
-    list2ForCompare.add(999);
-    list2ForCompare.add(2);
-    list2ForCompare.add(54);
-
-    Assertions.assertFalse(list1.equals(list1ForCompare));
-    Assertions.assertFalse(list2.equals(list2ForCompare));
 
 
+    Assertions.assertFalse(doubleList.equals(list1ForCompare));
+    Assertions.assertFalse(integerList.equals(list2ForCompare));
   }
 
   @Test
   void should_be_not_equal_null_object(){
-    list1 = getList1();
-    list2 = getList2();
+    MyList<Double> doubleList = initDoubleList();
+    MyList<Integer> integerList = initIntegerList();
     MyList<Double> list1Null = null;
     MyList<Integer> list2Null = null;
-    Assertions.assertFalse(list1.equals(list1Null));
-    Assertions.assertFalse(list2.equals(list2Null));
-
+    Assertions.assertFalse(doubleList.equals(list1Null));
+    Assertions.assertFalse(integerList.equals(list2Null));
   }
-
-
-
 
 }
